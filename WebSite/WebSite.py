@@ -78,8 +78,6 @@ def hello_world(user):
         return response
     else:
         #get events near user
-
-
         if('long' in request.cookies):
             location = [request.cookies.get('long'), request.cookies.get('lat')]
         else:
@@ -107,6 +105,7 @@ def hello_world(user):
         response.set_cookie('username', user)
         return response
 
+
 @app.route('/event/<event_id>', methods=['GET', 'POST'])
 def get_event(event_id):
 
@@ -118,18 +117,53 @@ def get_event(event_id):
         #get description
         text = event['text']
         title = event['title']
-        #posts = event['posts']
 
-        return render_template('event_chat.html',event_id=event_id, user=user, text=text, title=title)
+
+        new_post = {
+            "author": user,
+            "msg": request.values['msg'],
+            "time": datetime.datetime.utcnow()
+        }
+
+        db[event_id].insert_one(new_post)
+
+        posts = db[event_id].find()
+
+        messages = []
+        authors = []
+        times = []
+
+        for post in posts:
+            messages.append(post['msg'])
+            authors.append(post['author'])
+            times.append(post['time'])
+
+        return render_template('event_chat.html',event_id=event_id, user=user, text=text, title=title, messages=messages, times=times, authors=authors)
     else:
         #get event from id
         event = db.events.find_one({'_id': ObjectId(event_id)})
         #get description
         text = event['text']
         title = event['title']
-        #get previous comments
         user = request.cookies.get('username')
-        response = make_response(render_template('event_chat.html',event_id=event_id, user=user, text=text, title=title))
+        messages = []
+        authors = []
+        times = []
+
+
+        posts = db[event_id].find()
+        for post in posts:
+            messages.append(post['msg'])
+            authors.append(post['author'])
+            times.append(post['time'])
+        #get previous comments
+
+
+
+
+
+
+        response = make_response(render_template('event_chat.html',event_id=event_id, user=user, text=text, title=title, messages=messages, times=times, authors=authors))
         response.set_cookie('id', event_id)
         return response
 

@@ -84,7 +84,9 @@
             <div class="panel-body">
 <ul class="media-list">
 
-                                    <li class="media">
+
+    {% for msg in messages %}
+    <li class="media">
 
                                         <div class="media-body">
 
@@ -93,19 +95,16 @@
                                                     <img class="media-object img-circle " height="40px" src="../static/img/Drums.png" />
                                                 </a>
                                                 <div class="media-body" >
-                                                    Donec sit amet ligula enim. Duis vel condimentum massa.
-              
-              Donec sit amet ligula enim. Duis vel condimentum massa.Donec sit amet ligula enim. 
-                                                    Duis vel condimentum massa.
-                                                    Donec sit amet ligula enim. Duis vel condimentum massa.
+                                                    {{ msg }}
                                                     <br />
-                                                   <small class="text-muted">Alex Deo | 23rd June at 5:00pm</small>
+                                                   <small class="text-muted">{{ author }} | {{ time }}</small>
                                                     <hr />
                                                 </div>
                                             </div>
 
                                         </div>
                                     </li>
+    {% endfor %}
      <li class="media">
 
                                         <div class="media-body">
@@ -175,12 +174,14 @@
                                 </ul>
             </div>
             <div class="panel-footer">
+                <form action="/event/{{ event_id }}" method="POST">
                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Enter Message" />
+                                    <input type="text" class="form-control" name="msg" placeholder="Enter Message" />
                                     <span class="input-group-btn">
-                                        <button class="btn btn-info" type="button">SEND</button>
+                                        <button class="btn btn-info" type="submit">SEND</button>
                                     </span>
                                 </div>
+                    </form>
             </div>
         </div>
     </div>
