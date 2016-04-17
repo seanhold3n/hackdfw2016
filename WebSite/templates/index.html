@@ -76,39 +76,37 @@
         <div class="container bg">
             <div class="col-md-3"></div>
             <div class="col-md-6 text-center bg">
-                
+
                 <div class="event">
-                    <form class=".jam-form" role="form" action="/user/{{ user }}" method="POST">
+                    <form id="jam-event" class=".jam-form" role="form" action="/user/{{ user }}" method="POST">
                          <input type="text" class="form-headline" name="headline" placeholder="New Event">
                       <input type="text" class="form-description" name="description" placeholder="Describe your event">
-                      
+                        <input id="lat" type="hidden" display="none" name="lat">
+                        <input id = "long" type="hidden" display="none" name="long">
+
+
+
                       <button type="submit" class="btn btn-info post-event">Submit</button>
 
                     </form>
+
+
+
                 </div>
-                
-                <a href="/event/id">
+
+                {% for id in ids %}
+                <a href="/event/{{ id }}">
                 <div class="event">
                     <div class="event-headline">
-                        <h3>Garage jam</h3>
+                        <h3>{{ titles[loop.index0] }}</h3>
                     </div>
                     <div class="event-body">
-                        <p>Description</p>
+                        <p>{{ texts[loop.index0] }}</p>
                     </div>
                 </div>
                 </a>
-                
-                <a href="/event/id2">
-                <div class="event">
-                    <div class="event-headline">
-                        <h3>Garage jam</h3>
-                    </div>
-                    <div class="event-body">
-                        <p>Description</p>
-                    </div>
-                </div>
-                </a>
-                
+                {% endfor %}
+
             </div>
             <div class="col-md-3"></div>
         </div>
@@ -131,6 +129,36 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../static/js/freelancer.js"></script>
+
+    <script>
+
+
+                            $('.jam-form').keydown(getLocation());
+
+
+                            function getLocation(){
+                                if(navigator.geolocation){
+                                    navigator.geolocation.getCurrentPosition(recordPosition)
+                                }
+                                else{
+                                    alert("Not supported")
+                                }
+                            }
+
+                            function recordPosition(position){
+
+                                        $('#lat').val(position.coords.latitude);
+                                        $('#long').val(position.coords.longitude);
+
+                            }
+
+                            function updatePos(){
+                                getLocation();
+                                document.forms["jam-event"].submit();
+                            }
+
+                            setTimeout(updatePos, 300000)
+                        </script>
 
 </body>
 
